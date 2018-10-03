@@ -5,9 +5,8 @@ Tags: Node JS TP
 >etherpad.net/p/efrei-5a-nod
 
 ---
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
-# Syntax
+# JS Syntax
 
 ## Declaration: var\const\let
 Only use let except you know it would never change.
