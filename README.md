@@ -5,9 +5,7 @@ Tags: Node JS TP
 >etherpad.net/p/efrei-5a-nod
 
 ---
-[TOC]
 
----
 # Syntax
 
 ## Declaration: var\const\let
@@ -39,7 +37,7 @@ console.log(`My name is ${firstName} ${lastName}`);
 ```
 ## Fuctions and arrow funcitons
 ```JS
-fuction inc1=1(n){
+fuction inc1=(n){
     return n + 1
 }
 const inc2=function(n){return n+1}
