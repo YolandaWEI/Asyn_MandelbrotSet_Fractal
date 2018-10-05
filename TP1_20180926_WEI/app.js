@@ -1,6 +1,26 @@
-//Complex numbers
-class Complex {
-    constructor(re, im) {
+'use strict'
+
+const MAX_ITER = 20 //Iteration times
+
+
+//square in coordinate
+//lower left quarter position is (X_MIN,Y_MIN) in coordinate
+const X_MIN = -1 
+const Y_MIN = -1
+//highter right quarter position is (MAX,MAX) in coordinate
+const X_MAX = 1 
+const Y_MAX = 1 
+
+const readline = require('readline')
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+
+//Complex numbers 
+class Complex{
+    constructor(re, im){
         this.re = re
         this.im = im
         return this
@@ -35,24 +55,85 @@ class Complex {
         return Number
     }
 }
-
-//
-coordToComplex(x, y, size) = () => {
-    return new Complex.constructor(x/size,1-y/size)
+    /*
+    * @method coordToComplex()
+    * @return {Complex} the Complex created by point(x,y) and size
+    */
+function coordToComplex(x, y, size) {
+    return new Complex(X_MIN+(X_MAX-X_MIN)*(x / size), Y_MIN+(Y_MAX-Y_MIN)*(1 - y / size))
 }
 
-speedToGray(n) = () => {
-    if (n===0) {
-        return "0xffffff"
+
+function speedToGray(n) {
+    const GRAY_ORDER = 12.6 //MAX 12.6
+    if (n <= 0) {
+        return "0xffffffff"
     }
-    else if (n = 20) {
-        return "0x000000"
+    else if (n >= MAX_ITER) {
+        return "0x000000ff"
     }
-    else if((n * 12.8) < 16) {
-        n = "0" + (n * 12.8).toString(16)
+    else {
+        if ((256 - n * GRAY_ORDER) < 16) { n = parseInt(256 - n * GRAY_ORDER).toString(16) }
+        else { n = parseInt(256 - n * GRAY_ORDER).toString(16) }
+        return "0x" + n + n + n + "ff"
     }
-    else { n=(n * 12.8).toString(16)}
-    return "0xff"+n+n+n
 }
 
-console.log(speedToGray(0))
+function getGrayPixel(i,j,size) {
+    // get the Complex(x,y) from pixel(i,j) 
+    var pointC = coordToComplex(i,j,size)
+
+    //get the Gray level n
+    var z = new Complex(0, 0)
+    var n = 0
+    while (n < MAX_ITER) {
+        z = z.square()
+        z = z.sum(pointC)
+        if (z.module() > 2) return n  //for smooth return n + 1 - Math.log2(Math.log2(z.module())) 
+        n = n + 1
+    }
+    return MAX_ITER
+}
+
+function smooth(n) {
+    n=n+1-Math.log2(Math.log2(z.module()))
+}
+
+
+function buildGreyFractal(size, name){
+    const DESKTOP_URL = "C:\\Users\\YolandaW\\Desktop\\"
+    name = name + ".png" //add suffix
+    //Generate a image
+    const Jimp = require("jimp")
+    var image = new Jimp(size, size)
+
+    //initialize loop
+    var n = 0
+    
+    //draw the image
+    for (var i = 0; i < size; i++) {
+        for (var j = 0; j < size; j++) {
+            //get Gray level
+            n = getGrayPixel(i, j, size) 
+            
+            // Draw this pixel as gray level colour (n)
+            image.setPixelColor(parseInt(speedToGray(n)), i, j) 
+            
+        }
+    }
+
+     
+    //save the image
+    image.write(DESKTOP_URL + name) //save   
+
+}
+
+
+//execute
+buildGreyFractal(2048, "2048px")
+
+//quit
+rl.question('Quit? ', () => {
+    rl.close()
+})
+
